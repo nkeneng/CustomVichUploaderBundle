@@ -1,0 +1,6 @@
+services:
+  Steven\CustomVichUploadableBundle\Annotations\AnnotationReader:
+    class: Steven\CustomVichUploadableBundle\Annotations\AnnotationReader
+    arguments:
+      $reader: '@annotation_reader'
+    autowire: true
