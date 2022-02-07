@@ -1,6 +1,13 @@
 services:
   Steven\CustomVichUploadableBundle\Annotations\AnnotationReader:
     class: Steven\CustomVichUploadableBundle\Annotations\AnnotationReader
+    arguments: ['@annotation_reader']
+
+  Steven\CustomVichUploadableBundle\Listener\UploadSubscriber:
+    tags:
+      - {name: doctrine.event_subscriber, connection: default}
     arguments:
-      $reader: '@annotation_reader'
-    autowire: true
+      ['@Steven\CustomVichUploadableBundle\Annotations\AnnotationReader', '@steven_custom_vich_uploadable.handler.upload_handler']
+
+  steven_custom_vich_uploadable.handler.upload_handler:
+    class: Steven\CustomVichUploadableBundle\Handler\UploadHandler

@@ -7,6 +7,7 @@ namespace Steven\CustomVichUploadableBundle\Annotations;
 use App\Entity\Post;
 use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
+use ReflectionException;
 
 class AnnotationReader
 {
@@ -20,6 +21,13 @@ class AnnotationReader
         $this->reader = $reader;
     }
 
+    /**
+     * tell if an entity has the annotation
+     * IsUploadable
+     * @param $entity
+     * @return bool
+     * @throws ReflectionException
+     */
     public function isUploadable($entity): bool
     {
         $reflection = new ReflectionClass(get_class($entity));
@@ -27,8 +35,17 @@ class AnnotationReader
 
     }
 
+    /**
+     * return the list of all uploadable fields
+     * of an uploadable entity
+     * @param $entity
+     * @return array
+     * @throws ReflectionException
+     */
     public function getUploadableFields($entity): array
     {
+        // help getting all infos on a class
+        // all properties , methods , filename , and phpDoc
         $reflection = new \ReflectionClass(get_class($entity));
 
         if (!$this->isUploadable($entity)) {
@@ -38,12 +55,13 @@ class AnnotationReader
         $properties = [];
 
         foreach ($reflection->getProperties() as $property) {
+            // return an object containing the annotation data of a property
             $annotation = $this->reader->getPropertyAnnotation($property, UploadableField::class);
-            if ($annotation !== null){
+            if ($annotation !== null) {
                 $properties[$property->getName()] = $annotation;
             }
         }
 
-        return  $properties;
+        return $properties;
     }
 }
